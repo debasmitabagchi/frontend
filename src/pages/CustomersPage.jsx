@@ -6,7 +6,8 @@ export default function CustomersPage() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    fetch('/api/customers')
+    // Fetching from your local backend port
+    fetch('http://localhost:5000/api/customers')
       .then(res => res.json())
       .then(data => {
         setCustomers(data);
@@ -18,53 +19,76 @@ export default function CustomersPage() {
       });
   }, []);
 
+  // Update filter to search using the customer_id field
   const filtered = customers.filter(c =>
     c.name?.toLowerCase().includes(search.toLowerCase()) ||
-    c.email?.toLowerCase().includes(search.toLowerCase())
+    c.email?.toLowerCase().includes(search.toLowerCase()) ||
+    c.customer_id?.toLowerCase().includes(search.toLowerCase()) 
   );
 
-  if (loading) return <p>Loading customers...</p>;
+  if (loading) return <p style={{ padding: '24px' }}>Loading customers...</p>;
 
   return (
     <div style={{ padding: '24px' }}>
-      <h2>Customers</h2>
+      <h2 style={{ marginBottom: '16px' }}>Customers</h2>
       <input
         type="text"
-        placeholder="Search by name or email..."
+        placeholder="Search by ID, name or email..."
         value={search}
         onChange={e => setSearch(e.target.value)}
-        style={{ marginBottom: '16px', padding: '8px', width: '300px' }}
+        style={{ 
+          marginBottom: '24px', 
+          padding: '10px', 
+          width: '100%', 
+          maxWidth: '400px',
+          borderRadius: '6px',
+          border: '1px solid #ccc'
+        }}
       />
-      <table border="1" cellPadding="8" style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead style={{ background: '#f5f5f5' }}>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Phone</th>
-            <th>Total Orders</th>
-            <th>Total Spent</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.length === 0 ? (
+      <div style={{ overflowX: 'auto' }}>
+        <table border="1" cellPadding="12" style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: '#fff' }}>
+          <thead style={{ background: '#f8f9fa' }}>
             <tr>
-              <td colSpan="6" style={{ textAlign: 'center' }}>No customers found</td>
+              <th style={{ textAlign: 'left' }}>Customer ID</th>
+              <th style={{ textAlign: 'left' }}>Name</th>
+              <th style={{ textAlign: 'left' }}>Email</th>
+              <th style={{ textAlign: 'left' }}>Phone</th>
+              <th style={{ textAlign: 'left' }}>Status</th>
             </tr>
-          ) : (
-            filtered.map(c => (
-              <tr key={c._id}>
-                <td>{c.name}</td>
-                <td>{c.email}</td>
-                <td>{c.phone || '—'}</td>
-                <td>{c.totalOrders ?? 0}</td>
-                <td>${(c.totalSpent ?? 0).toFixed(2)}</td>
-                <td>{c.status || 'Active'}</td>
+          </thead>
+          <tbody>
+            {filtered.length === 0 ? (
+              <tr>
+                <td colSpan="5" style={{ textAlign: 'center', padding: '40px' }}>No customers found.</td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              filtered.map(c => (
+                <tr key={c._id} style={{ borderBottom: '1px solid #eee' }}>
+                  {/* CRITICAL FIX: Ensure c.customer_id matches the field in image_9d1a21.png */}
+                  <td style={{ fontFamily: 'monospace', fontWeight: 'bold', color: '#1976d2' }}>
+                    {c.customer_id}
+                  </td>
+                  <td>{c.name}</td>
+                  <td>{c.email}</td>
+                  <td>{c.phone || '—'}</td>
+                  <td>
+                    <span style={{
+                      padding: '4px 10px',
+                      borderRadius: '20px',
+                      background: '#e8f5e9',
+                      color: '#2e7d32',
+                      fontSize: '12px',
+                      fontWeight: '600'
+                    }}>
+                      {c.status || 'Active'}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

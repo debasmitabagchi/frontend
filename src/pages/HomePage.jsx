@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig';
 
-// Changed from 192.168.0.116 to localhost to match your backend
-const API = 'http://localhost:5000';
 
 export default function HomePage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API}/api/products`).then(r => r.json()).catch(() => []),
-      fetch(`${API}/api/customers`).then(r => r.json()).catch(() => []),
-      fetch(`${API}/api/orders`).then(r => r.json()).catch(() => []),
-    ]).then(([products, customers, orders]) => {
-      // Correctly using total_amount to match your ecommerce_db fields
-      const totalRevenue = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
-      
-      setStats({
+        Promise.all([
+            // 2. Use the central variable for all three calls
+            fetch(`${API_BASE_URL}/products`).then(r => r.json()).catch(() => []),
+            fetch(`${API_BASE_URL}/customers`).then(r => r.json()).catch(() => []),
+            fetch(`${API_BASE_URL}/orders`).then(r => r.json()).catch(() => []),
+        ]).then(([products, customers, orders]) => {
+            const totalRevenue = orders.reduce((sum, o) => sum + (o.total_amount || 0), 0);
+     
+     
+            setStats({
         products: products.length,
         customers: customers.length,
         orders: orders.length,

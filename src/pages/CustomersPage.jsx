@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig'
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState([]);
@@ -7,7 +8,7 @@ export default function CustomersPage() {
 
   useEffect(() => {
     // Fetching from your local backend port
-    fetch('http://localhost:5000/api/customers')
+    fetch(`${API_BASE_URL}/customers`)
       .then(res => res.json())
       .then(data => {
         setCustomers(data);

@@ -1,25 +1,25 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig'; // 1. Import your global URL
 
 export default function OrdersPage() {
-  const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [statusFilter, setStatusFilter] = useState('All');
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [statusFilter, setStatusFilter] = useState('All');
 
-  useEffect(() => {
-    // Changed URL to localhost:5000 to match your active backend server
-    fetch('http://localhost:5000/api/orders')
-      .then(res => res.json())
-      .then(data => { 
-        setOrders(data); 
-        setLoading(false); 
-      })
-      .catch(err => { 
-        console.error('Failed to load orders:', err); 
-        setLoading(false); 
-      });
-  }, []);
-
+    useEffect(() => {
+        // 2. Use the central variable instead of localhost:5000
+        fetch(`${API_BASE_URL}/orders`)
+            .then(res => res.json())
+            .then(data => {
+                setOrders(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to load orders:', err);
+                setLoading(false);
+            });
+    }, []);
   const statusColors = {
     delivered: '#388e3c',
     confirmed: '#1976d2',

@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig';
 
-// Using localhost to match your backend port 5000 as seen in your terminal
-const API = 'http://localhost:5000';
 
 export default function AnalyticsPage() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    Promise.all([
-      fetch(`${API}/api/products`).then(r => r.json()).catch(() => []),
-      fetch(`${API}/api/customers`).then(r => r.json()).catch(() => []),
-      fetch(`${API}/api/orders`).then(r => r.json()).catch(() => []),
-    ]).then(([products, customers, orders]) => {
+useEffect(() => {
+        Promise.all([
+            // 2. Use the variable instead of the hardcoded localhost string
+            fetch(`${API_BASE_URL}/products`).then(r => r.json()).catch(() => []),
+            fetch(`${API_BASE_URL}/customers`).then(r => r.json()).catch(() => []),
+            fetch(`${API_BASE_URL}/orders`).then(r => r.json()).catch(() => []),
+        ]).then(([products, customers, orders]) => {
       // Correctly using total_amount from your MongoDB orders collection
       const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
       

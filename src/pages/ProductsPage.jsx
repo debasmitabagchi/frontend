@@ -1,23 +1,24 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../apiConfig'; // 1. Import the global config
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Changed URL from 192.168.0.116 to localhost to match your backend port 5000
-    fetch('http://localhost:5000/api/products')
-      .then(res => res.json())
-      .then(data => {
-        setProducts(data);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error('Failed to load products:', err);
-        setLoading(false);
-      });
-  }, []);
-
+    useEffect(() => {
+        // 2. Point the fetch to the live Render URL
+        fetch(`${API_BASE_URL}/products`)
+            .then(res => res.json())
+            .then(data => {
+                setProducts(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.error('Failed to load products:', err);
+                setLoading(false);
+            });
+    }, []);
+    
   if (loading) return <p style={{ padding: '20px' }}>Loading products from ecommerce_db...</p>;
 
   return (
